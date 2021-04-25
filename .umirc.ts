@@ -9,8 +9,8 @@ export default defineConfig({
   
   outputPath: '.doc',
   exportStatic: {},
-  base:"/RForm",
-  publicPath:"/RForm/",
+  // base:"/RForm",
+  // publicPath:"/RForm/",
   styles: [
     `
       .markdown table {
