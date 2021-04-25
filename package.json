@@ -11,7 +11,8 @@
     "docs:deploy": "gh-pages -d .doc",
     "deploy": "npm run docs:build && npm run docs:deploy",
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
-    "build": "father-build"
+    "build": "father-build",
+    "now-build": "npm run docs:build"
   },
   "files": [
     "lib",
@@ -65,7 +66,7 @@
     "jest": "^26.6.3",
     "lint-staged": "^10.0.7",
     "prettier": "^1.19.1",
-    "react": "^16.12.0",
-    "rong-react": "^0.1.4"
+    "react": "^16.12.0"
+
   }
 }
