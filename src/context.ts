@@ -10,6 +10,7 @@ export type FormType = {
     store:RootInstance,
     validateTrigger?:ValidateTriggerType[]
     validateMessage?:ValidateMessages
+    listInitial?:{[name:string]:any[]}
 }
 const RootStoreContext = createContext<null | FormType>(null);
 export function useMst() {
