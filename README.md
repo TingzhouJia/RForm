@@ -21,6 +21,7 @@ npm i rong-form -S
 2.  Import :
 
 ```jsx
+import ReactDOM from 'react-dom';
 import { Form,Field } from "rong-form";
 ReactDOM.render(
   <Form>
