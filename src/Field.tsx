@@ -12,6 +12,7 @@ export const FieldStore = types.model("field", {
     error: types.maybeNull(types.array(types.string)),
     defaultValue: types.maybeNull(types.string),
     validating: types.optional(types.boolean, false),
+    preserve:types.optional(types.boolean,false),
     dependencies:types.optional(types.array(types.string),[]),
     dependsOn:types.optional(types.map(types.string),{})
 }).actions((self) => ({
@@ -27,7 +28,7 @@ export const FieldStore = types.model("field", {
 
 export interface IField {
     name: string | string[]
-    defaultValue?: string
+    defaultValue?: any
     trigger?: string,
     validateTrigger?: ValidateTriggerType[]
     dependencies?: string[],
@@ -35,8 +36,9 @@ export interface IField {
     getValueFromEvents?: (...args: any) => any
     // renderer:React.ReactNode
     rules?: RuleObject,
+    preserve?:boolean
     isListField?: boolean,
-    initialValue?: string,
+    initialValue?: any,
     children: React.ReactNode | (( controls: any,meta:Meta,dependencies: {[name:string]:IFieldStore},) => React.ReactNode)
 }
 
@@ -46,6 +48,7 @@ const Field: React.FC<IField> = observer(({
     trigger = "onChange",
     valuePropName = "value",
     defaultValue = "",
+    preserve=false,
     getValueFromEvents,
     validateTrigger = ["onChange"],
     rules,
@@ -66,7 +69,7 @@ const Field: React.FC<IField> = observer(({
         if (!isListField) {
             // when 
             if (name && typeof name === 'string' && !store.hasField(name)) {
-                store.registerField({ name, value: initialValue || defaultValue, defaultValue,dependencies:[] })
+                store.registerField({ name, value: initialValue || defaultValue, defaultValue,dependencies:[],preserve })
              //   store.registerDependencies(name,dependencies)
             } else {
                 warning(false, "Duplicated Name in form")
