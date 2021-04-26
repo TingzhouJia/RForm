@@ -93,7 +93,7 @@ const Form = React.forwardRef<IFormInstance, IFormProps>(({
     const getValues = (args,isList:boolean) => {
         const fields= isList?formState.getFieldKeys():formState.getFieldKeys(args[0], args[1])
         const listfields=isList?formState.getListValues():formState.getListValues(args[0],args[1],args[2])
-        return fields
+        return {...fields,...listfields}
     }
     // const getValueFromlist(args)=>{
     //     return formState.getListValues(args[0],)
@@ -124,6 +124,18 @@ const Form = React.forwardRef<IFormInstance, IFormProps>(({
         }
     }
 
+    const allList=()=>{
+        let c={}
+        if(initialValues){
+            Object.keys(initialValues).map(item=>{
+                if(Array.isArray(initialValues[item])){
+                    c[item]=initialValues[item]
+                }
+            })
+        }
+        return c
+    }
+
     useEffect(() => {
         init()
         return () => {
@@ -132,7 +144,7 @@ const Form = React.forwardRef<IFormInstance, IFormProps>(({
     }, [])
 
     const wrapperNode = (
-        <Provider value={{ store: disposer(formState), validateTrigger, validateMessage: validateMessages }}>{children}</Provider>
+        <Provider value={{ store: disposer(formState), validateTrigger, validateMessage: validateMessages,listInitial:allList() }}>{children}</Provider>
     );
 
     if (Component === false) {
