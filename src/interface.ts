@@ -293,6 +293,8 @@ export interface SchemaField {
 
     },
 
+    listChildren?:{[name:string]:SchemaField}
+
     required?:boolean
     placeholder?: string,
     defaultValues?: any,
@@ -306,7 +308,6 @@ export interface SchemaField {
 }
 
 export interface SchemaType {
-    type: 'object' | 'list',
     name:string
     properties: {
         [name: string]: SchemaField
