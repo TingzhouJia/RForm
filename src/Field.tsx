@@ -20,7 +20,7 @@ export const FieldStore = types.model("field", {
         self.value = value 
     },
     reset() {
-        self.value = null
+        self.value = ""
     },
 
     
