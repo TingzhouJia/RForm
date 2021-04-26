@@ -4,8 +4,8 @@ import { Field, Form, ListForm } from 'rong-form'
 
 export default () => {
     return (
-        <Form >
-            <ListForm name="a">
+        <Form initialValues={{"a":['1','2','3']}}>
+            <ListForm name="a" initialValue={['1','2','3']}>
                 {
                     (fields, { add, remove }) => {
                         return <>{
