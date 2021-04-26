@@ -57,7 +57,7 @@ const renderInput = (type: string, defaultValue?: any, accept?: string, min?: nu
 
 
 
-const SchemaForm = React.forwardRef<IFormInstance, ISchemaFormProps>(({ schema, widget }, ref) => {
+const SchemaForm = React.forwardRef<IFormInstance, ISchemaFormProps>(({ schema, widget,actions }, ref) => {
 
     const formState = FormStore.create({ fields: {} },)
     const formRef = useRef<HTMLFormElement>()
@@ -69,7 +69,9 @@ const SchemaForm = React.forwardRef<IFormInstance, ISchemaFormProps>(({ schema, 
             const rendered = widget[customizedName]
             return rendered(config)
         }
-        return
+        
+        return 
+        
     }
 
     const getbasicComponent = (config: SchemaField) => {
@@ -89,8 +91,12 @@ const SchemaForm = React.forwardRef<IFormInstance, ISchemaFormProps>(({ schema, 
         if (!renderedComponent) {
             renderedComponent = getbasicComponent(config)
         }
+        const action=actions[config.actions]
+        if(action){
+            renderedComponent=action(renderedComponent)
+        }
         return <Field name={config.name} >
-            {renderComponent}
+            {renderedComponent}
         </Field>
     }
 
@@ -105,7 +111,9 @@ const SchemaForm = React.forwardRef<IFormInstance, ISchemaFormProps>(({ schema, 
             //register an list form
             if (config.type === 'list') {
                 return <ListForm name={config.name}>
+                        {
 
+                        }
                 </ListForm>
             }
 
