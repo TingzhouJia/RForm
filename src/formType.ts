@@ -31,8 +31,9 @@ export const FormStore = types.model("Form", {
                 if(typeof first!=='object'){
                     const sets={}
                     dataSet.map((each,index)=>{
-                            sets[index]= {[index]:{name:index,value:each}}
+                            sets[index]= {[index]:{name:String(index),value:each}}
                     })
+                    
                     self.listFields.set(item,{type:['1'],data:sets,name:item})
                 }else{
                     let type=Object.keys(first)
@@ -40,7 +41,7 @@ export const FormStore = types.model("Form", {
                     dataSet.map((item,index)=>{
                         let temp={}
                         Object.keys(item).map((eachKey)=>{
-                            temp[eachKey]={name:eachKey,value:item[eachKey]}
+                            temp[eachKey]={name:String(eachKey),value:item[eachKey]}
                         })
                         items[index]=temp
                     })
