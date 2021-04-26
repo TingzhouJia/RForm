@@ -271,7 +271,7 @@ export interface SchemaField {
         select?: {
             optionValues: string[]
             optionNames: string[]
-            default?:string,
+            defaultValue?:string[],
             multiple?:boolean
         },
 
