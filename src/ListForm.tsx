@@ -17,7 +17,7 @@ export interface IListProps {
     validateTrigger?: string | string[] | false;
     initialValue?: any[];
     children?: (
-        fields: { name: string,  key: string, isListField: boolean }[],
+        fields: { name: string, key: string, isListField: boolean }[],
         operations: ListOperations,
 
     ) => JSX.Element | React.ReactNode;
@@ -35,18 +35,19 @@ const List: React.FC<IListProps> = observer((props) => {
         return null;
     }
 
-    const { store } = useMst()
+    const { store,listInitial } = useMst()
     const keyRef = React.useRef({
         keys: [],
         id: 0,
     });
     const [keys, setkeys] = useState([])
-    
+
     const keyManager = keyRef.current;
 
     const initData = () => {
-
-        if (initialValue) {
+        const isListGet=listInitial[name]
+       
+        if (initialValue&&!isListGet) {
             if (!Array.isArray(initialValue)) {
                 return warning(false, "initialValue should be array")
             }
@@ -59,13 +60,25 @@ const List: React.FC<IListProps> = observer((props) => {
                 }
 
             })
-            
+
             store.registerFromForm(name, initialValue)
         } else {
-            keyManager.keys[0]=keyManager.id
-            keyManager.id+=1
-            store.registerInit(name)
-           
+            if (!isListGet) {
+                keyManager.keys[0] = keyManager.id
+                keyManager.id += 1
+                store.registerInit(name)
+            }else{
+                isListGet.map((item, index) => {
+                    let key = keyManager.keys[index];
+                    if (key === undefined) {
+                        keyManager.keys[index] = keyManager.id;
+                        key = keyManager.keys[index];
+                        keyManager.id += 1;
+                    }
+    
+                })
+            }
+
         }
         setkeys([2])
     }
@@ -112,23 +125,23 @@ const List: React.FC<IListProps> = observer((props) => {
     const mapData = useCallback(
         () => {
             // let dataSet = store.getListData(name)
-    
+
             // if (dataSet) {
-    
+
             //     return Object.values(dataSet.toJSON()).map((item, index) => {
-    
-    
+
+
             //         let key = keyManager.keys[index];
             //         if (key === undefined) {
             //             keyManager.keys[index] = keyManager.id;
             //             key = keyManager.keys[index];
             //             keyManager.id += 1;
             //         }
-    
-    
+
+
             //         const errors = []
             //         Object.values(item).map(each => {
-    
+
             //             errors.push(each.error)
             //         })
             //         return {
@@ -136,9 +149,9 @@ const List: React.FC<IListProps> = observer((props) => {
             //         }
             //     })
             // }
-          
+
             return keyManager.keys.map((item, index) => {
-                return {  name: item, isListField: true, key: item }
+                return { name: item, isListField: true, key: item }
             })
             //return []
         },
