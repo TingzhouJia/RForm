@@ -72,7 +72,15 @@ export const FormStore = types.model("Form", {
         self.fields.set(name, { ...cur, ...other })
     },
     reset() {
-        self.fields.forEach(item => item.reset())
+        self.fields.forEach(item =>{
+            if(item?.preserve){
+                item?.defaultValue? item.setValue(item?.defaultValue):()=>{}
+            }else{
+                
+                item.reset()
+                
+            }
+        })
         self.listFields.forEach(item => item.reset())
     },
 
