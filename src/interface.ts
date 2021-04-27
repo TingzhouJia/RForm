@@ -253,64 +253,67 @@ export interface IFieldStore {
     defaultValue?: string
     error?: boolean
     validating?: boolean
-    dependencies?:string[]
-    
+    dependencies?: string[]
+
 }
 
 export interface SchemaField {
     title: string
-    name:string
-    type: 'string' | 'number' | 'boolean' | 'array' | 'object' | 'list' 
-    widget ?:string
+    name: string
+    type: 'string' | 'number' | 'boolean' | 'array' | 'object' | 'list'
+    widget?: string
     componentprops?: {
         name?: 'input' | 'select',
-        type?: 'checkbox' | 'color' | 'date' | 'datetime-local' |'email'|'password'|'url'|
-        'file' |  'month' | 'number' | 'radio' | 'range' | 'week' |'text'
+        type?: 'checkbox' | 'color' | 'date' | 'datetime-local' | 'email' | 'password' | 'url' |
+        'file' | 'month' | 'number' | 'radio' | 'range' | 'week' | 'text'
         trigger?: string
         valueProps?: string
         select?: {
             optionValues: string[]
             optionNames: string[]
-            defaultValue?:string[],
-            multiple?:boolean
+            defaultValue?: string[],
+            multiple?: boolean
         },
 
         // used in range and number
-        range?:{
-            min?:number
-            max?:number
-            step?:number
+        range?: {
+            min?: number
+            max?: number
+            step?: number
         },
         //used in date related
-        date?:{
-            min?:string,
-            max?:string
+        date?: {
+            min?: string,
+            max?: string
         },
-        file?:{
-            accept?:string
+        file?: {
+            accept?: string
         },
-        
+
 
     },
 
-    listChildren?:{[name:string]:SchemaField}
+    listChildren?: { [name: string]: SchemaField }
 
-    required?:boolean
+    required?: boolean
     placeholder?: string,
     defaultValues?: any,
     // list of dependencies
     dependencies?: string[],
     // used for handle dependencies
-    actions:{
-        [name:string]:string
-    }
-    rules?:RuleObject
+    actions: string
+    rules?: RuleObject
 }
 
 export interface SchemaType {
-    name:string
-    properties: {
+    name: string
+    displayType?:'vertical'|'horizontal'
+    customized?:boolean
+    properties?: {
         [name: string]: SchemaField
     }
+
+
+
 }
 
