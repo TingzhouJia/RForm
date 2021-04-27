@@ -9,7 +9,7 @@ import { IFieldStore, Meta, RuleObject, SchemaField, SchemaType } from "./interf
 
 export interface ISchemaFormProps {
     schema: SchemaType
-    actions?: { [name: string]: any }
+    actions?: { [name: string]: ((controls: any, meta: Meta, dependencies: { [name: string]: IFieldStore }, component: Component) => React.ReactNode) }
     widget: { [name: string]: ((props: SchemaField) => Component) }
 }
 
@@ -57,7 +57,7 @@ const renderInput = (type: string, defaultValue?: any, accept?: string, min?: nu
 
 
 
-const SchemaForm = React.forwardRef<IFormInstance, ISchemaFormProps>(({ schema, widget,actions }, ref) => {
+const SchemaForm = React.forwardRef<IFormInstance, ISchemaFormProps>(({ schema, widget, actions }, ref) => {
 
     const formState = FormStore.create({ fields: {} },)
     const formRef = useRef<HTMLFormElement>()
@@ -69,9 +69,9 @@ const SchemaForm = React.forwardRef<IFormInstance, ISchemaFormProps>(({ schema, 
             const rendered = widget[customizedName]
             return rendered(config)
         }
-        
-        return 
-        
+
+        return
+
     }
 
     const getbasicComponent = (config: SchemaField) => {
@@ -82,22 +82,29 @@ const SchemaForm = React.forwardRef<IFormInstance, ISchemaFormProps>(({ schema, 
             config?.componentprops?.file?.accept,
             config?.componentprops?.range?.min, config?.componentprops?.range?.max, config?.componentprops?.range?.step) :
             renderSelect(optionNames, optionValues, defaultValue, multiple)
+        return basis
     }
 
-     // get the component that should be rendered
-    const renderComponent = (config:SchemaField) => {
+    // get the component that should be rendered
+    const renderComponent = (config: SchemaField) => {
         let renderedComponent
         renderedComponent = GetCustomized(config)
         if (!renderedComponent) {
             renderedComponent = getbasicComponent(config)
         }
-        const action=actions[config.actions]
-        if(action){
-            renderedComponent=action(renderedComponent)
-        }
-        return <Field name={config.name} >
-            {renderedComponent}
-        </Field>
+        return renderedComponent
+    }
+
+    const getListChildren = (name:string,children: { [name: string]: SchemaField }) => {
+        return Object.keys(children).map(item => {
+            let config = children[item]
+            
+            return (
+                <Field name={[name,config.name]}>
+
+                </Field>
+            )
+        })
     }
 
     const GenForm = () => {
@@ -106,15 +113,53 @@ const SchemaForm = React.forwardRef<IFormInstance, ISchemaFormProps>(({ schema, 
 
         Object.keys(children).map(name => {
             const config = children[name]
-           
+
 
             //register an list form
             if (config.type === 'list') {
-                return <ListForm name={config.name}>
-                        {
 
+                return <ListForm name={config.name}>
+                    {
+                        (fields, { }) => {
+                            return (fields.map((field, index) => {
+                                return (
+                                    <Field name={[field.name]}>
+
+                                    </Field>
+                                )
+                            }))
                         }
+                    }
                 </ListForm>
+            } else {
+                const renderedComponent=renderComponent(config)
+                const action = actions[config.actions]
+                if (action) {
+                    return <Field name={config.name} dependencies={config.dependencies}>
+                        {
+                            (control, meta, dependencies) => {
+                                return action(control, meta, dependencies, renderedComponent)
+                            }
+                        }
+                    </Field>
+                }
+
+                return <Field name={config.name} >
+                    {
+                        (control, meta, dependencies) => {
+                            const newElement = React.cloneElement(renderedComponent, control)
+                            return (<div>
+                                <label>{config.title}</label>
+                                <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-start", alignItems: "flex-start" }}>
+                                    {newElement}
+                                    {meta.errors.map(item => {
+                                        return <span color="red">{item}</span>
+                                    })}
+                                </div>
+                            </div>)
+                        }
+                    }
+                </Field>
             }
 
         })
