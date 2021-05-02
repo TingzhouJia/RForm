@@ -280,7 +280,7 @@ export const FormStore = types.model("Form", {
     },
     getFieldKeys(key?: any, value?: any) {
         let cur = {}
-        self.fields.forEach((item) => {
+        self.fields?.forEach((item) => {
             if (item.name === key) {
                 cur[item.name] = value
             } else {
@@ -346,7 +346,7 @@ export const FormStore = types.model("Form", {
             }
         } else {
             let res = {}
-            self.listFields.forEach(item => {
+            self.listFields?.forEach(item => {
                 const cur = item.data.toJSON()
                 const curList = []
                 Object.values(cur).map(value => {
