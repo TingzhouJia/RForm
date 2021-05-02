@@ -8,7 +8,7 @@ export default () => {
             {JSON.stringify(state)}
 
             <Form  onValuesChange={(val) => { console.log(val) }} onFinish={(e)=>{setstate(e)}}>
-                <Field name="username" rules={[{required:true,type:'string'}]} >
+                <Field name="username" rules={{required:true,type:'string'}} >
                     <input type="text" />
                 </Field>
                 <br/>
