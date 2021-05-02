@@ -27,15 +27,6 @@ const GenRules = (rules?: RuleObject, required?: boolean, type?: any, compType?:
     return rules
 }
 
-const basicTyepMapper = (type: string, componentType?: string,) => {
-    if (type === 'input') {
-        return <input type={componentType || 'text'} />
-    } else {
-        return <select >
-
-        </select>
-    }
-}
 
 const renderSelect = (selectNames?: string[], selectValues?: string[], defaultValue?: string[], multiple?: boolean) => {
     return <select multiple={!!multiple} defaultValue={defaultValue} >
@@ -59,7 +50,7 @@ const renderInput = (type: string, defaultValue?: any, accept?: string, min?: nu
 
 const SchemaForm = React.forwardRef<IFormInstance, ISchemaFormProps>(({ schema, widget, actions }, ref) => {
 
-    const formState = FormStore.create({ fields: {} },)
+    
     const formRef = useRef<HTMLFormElement>()
 
 
@@ -98,20 +89,28 @@ const SchemaForm = React.forwardRef<IFormInstance, ISchemaFormProps>(({ schema, 
     const getListChildren = (name:string,children: { [name: string]: SchemaField }) => {
         return Object.keys(children).map(item => {
             let config = children[item]
+            const child=renderComponent(config)
             
             return (
-                <Field name={[name,config.name]}>
-
+                <Field isListField name={[name,config.name]}>
+                    {
+                        (control,meta,)=>{
+                            let newEle=React.cloneElement(child,control)
+                            return newEle
+                        }
+                    }
                 </Field>
             )
         })
     }
 
+    
+
     const GenForm = () => {
 
         const children = schema.properties
 
-        Object.keys(children).map(name => {
+        return Object.keys(children).map(name => {
             const config = children[name]
 
 
@@ -120,13 +119,11 @@ const SchemaForm = React.forwardRef<IFormInstance, ISchemaFormProps>(({ schema, 
 
                 return <ListForm name={config.name}>
                     {
-                        (fields, { }) => {
+                        (fields, {add,remove }) => {
                             return (fields.map((field, index) => {
-                                return (
-                                    <Field name={[field.name]}>
-
-                                    </Field>
-                                )
+                                return <React.Fragment key={field.key}>
+                                    {getListChildren(field.name,config.listChildren).map(item=>item)}
+                                </React.Fragment>
                             }))
                         }
                     }
@@ -166,5 +163,7 @@ const SchemaForm = React.forwardRef<IFormInstance, ISchemaFormProps>(({ schema, 
 
     }
 
-    return <Form></Form>
+    return <Form name={schema.name}>
+        {GenForm().map(item=>item)}
+    </Form>
 })
