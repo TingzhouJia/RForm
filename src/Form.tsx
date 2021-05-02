@@ -5,7 +5,7 @@ import { Provider } from "./context";
 
 import { FieldStore } from "./Field";
 import { FormStore } from "./formType";
-import { Callbacks, FieldError, Rule, ValidateMessages, ValidateTriggerType } from "./interface";
+import { Callbacks, FieldError, IFieldStore, Rule, ValidateMessages, ValidateTriggerType } from "./interface";
 
 
 
@@ -52,7 +52,8 @@ const Form = React.forwardRef<IFormInstance, IFormProps>(({
                 return formState.getFieldValue(name)
             },
             getFieldsValue() {
-                return getSnapshot(formState, true)
+               return getValueFromSnap()
+
             },
             getFieldError(name: string) {
                 return formState.getFieldError(name)
@@ -95,9 +96,16 @@ const Form = React.forwardRef<IFormInstance, IFormProps>(({
         const listfields=isList?formState.getListValues():formState.getListValues(args[0],args[1],args[2])
         return {...fields,...listfields}
     }
-    // const getValueFromlist(args)=>{
-    //     return formState.getListValues(args[0],)
-    // }
+    const getValueFromSnap=()=>{
+        const dataSet=formState.fields?.toJSON()
+        const fieldsValue=Object.keys(dataSet).map(name=>{
+            const data=dataSet[name]
+            return {[data.name]:data.value}
+        })
+        const lists=formState.getListValues()
+        return {...fieldsValue,...lists}
+
+    }
     const disposer = (baseStore) => {
         if (onValuesChange) {
             addMiddleware(baseStore, (call, next, abort) => {
